@@ -69,7 +69,7 @@ class Db
      * @param array $params
      * @return array
      */
-    public static function getData(string $query, array $params) : array
+    public static function getData(string $query, array $params = []) : array
     {
         $stmt = self::con()->prepare($query);
         $stmt->execute($params);
