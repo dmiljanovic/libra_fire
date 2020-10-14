@@ -25,7 +25,7 @@
                 <thead>
                 <tr>
                     <th scope="col">Full Name</th>
-                    <th scope="col">Index number</th>
+                    <th scope="col">School Board</th>
                     <th scope="col">Created At</th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -34,10 +34,10 @@
                 <?php foreach ($data as $student) { ?>
                     <tr>
                         <td><?php echo $student['full_name'] ?></td>
-                        <td><?php echo $student['index_number'] ?></td>
+                        <td><?php echo $student['name'] ?></td>
                         <td><?php echo $student['created_at'] ?></td>
                         <td>
-                            <a class="btn btn-info" href="/students/<?php echo $student['id'] ?>/view" role="button">View</a>
+                            <a class="btn btn-info" href="/students/<?php echo $student['id'] ?>" role="button">View</a>
                         </td>
                     </tr>
                 <?php } ?>

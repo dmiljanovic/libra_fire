@@ -36,7 +36,7 @@ class Log
     {
         if (self::$fileInit == null)
         {
-            self::$fileInit = Analog::handler(File::init('/tmp/php.log'));
+            self::$fileInit = Analog::handler(File::init('storage/php.log'));
         }
     }
 }

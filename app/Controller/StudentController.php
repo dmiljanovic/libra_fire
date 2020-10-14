@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use Analog\Analog;
 use App\Repositories\StudentRepository;
+use App\Services\StudentService;
 
 /**
  * Class StudentController
@@ -22,6 +24,7 @@ class StudentController extends BaseController
     public function __construct(StudentRepository $studentRepository)
     {
         parent::__construct();
+
         $this->studentRepository = $studentRepository;
     }
 
@@ -35,7 +38,23 @@ class StudentController extends BaseController
         try {
             $this->createView('students', $students);
         } catch (\Exception $exception) {
-            \Analog::log('Error while fetching all students from db: ' . $exception);
+            Analog::log('Error while fetching all students from db: ' . $exception);
         }
+    }
+
+    /**
+     * @param int $studentId
+     * @param StudentService $studentService
+     */
+    public function getStudent(int $studentId, StudentService $studentService)
+    {
+        try {
+            $studentData = $studentService->getStudent($studentId);
+        } catch (\Exception $exception) {
+            Analog::log('Error while fetching task from db: ' . $exception);
+            header("location: ../../students");
+        }
+
+        $this->createView('student_view', $studentData);
     }
 }

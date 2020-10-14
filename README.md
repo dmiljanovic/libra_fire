@@ -47,5 +47,6 @@ that is merged back into develop (gitflow)
 * Clone repo
 * To install dependencies please run "composer install"
 * To create a database and tables please run sql script (db.sql).
+* Create `php.log` file in `storage` folder to keep tracking the log errors
 
 Enjoy :)
