@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\StudentRepository;
+use SimpleXMLElement;
 
 /**
  * Class StudentService
@@ -26,22 +27,91 @@ class StudentService
 
     /**
      * @param int $studentId
-     * @return array
+     * @return bool|string
      */
-    public function getStudent(int $studentId) : array
+    public function getStudent(int $studentId)
     {
         $data = $this->studentRepository->getStudent($studentId);
 
-        //TODO
         return $this->mapStudentData($data);
     }
 
     /**
      * @param array $studentData
-     * @return array
+     * @return bool|string
      */
-    private function mapStudentData(array $studentData) : array
+    private function mapStudentData(array $studentData)
     {
-        return [];
+        $result = [];
+        $board = null;
+
+        foreach ($studentData as $key => $item) {
+            if (!$board) {
+                $board = $item['school_board'];
+            }
+
+            if (!isset($result['student_id'])) {
+                $result['student_id'] = $item['id'];
+            }
+
+            if (!isset($result['name'])) {
+                $result['name'] = $item['full_name'];
+            }
+
+            $result['list_of_grades']['garde_' . $key] = $item['grade'];
+        }
+
+        return $this->calculateGrades($result, $board);
+    }
+
+    /**
+     * @param array $data
+     * @param string $board
+     * @return bool|string
+     */
+    private function calculateGrades(array $data, string $board)
+    {
+        if ($board === 'CSM') {
+            $data['averages'] = array_sum($data['list_of_grades'])/count($data['list_of_grades']);
+            $data['final_result'] = $data['averages'] >= 7;
+
+            return json_encode($data);
+        } else {
+            // Sort the array from lowest to highest value
+            sort($data['list_of_grades']);
+            // Remove the min value.
+            array_shift($data['list_of_grades']);
+            $data['final_result'] =
+                array_sum($data['list_of_grades'])/count($data['list_of_grades']) > 8 && count($data['list_of_grades']) > 2 ? 'Passed' : 'Failed';
+
+            $xmlStudentInfo = new SimpleXMLElement("<?xml version=\"1.0\"?><user_info></user_info>");
+            $xmlStudentInfo = $this->arrayToXml($data,$xmlStudentInfo);
+
+            return $xmlStudentInfo->asXML();
+        }
+    }
+
+    /**
+     * @param array $array
+     * @param SimpleXMLElement $xmlStudentInfo
+     * @return SimpleXMLElement
+     */
+    function arrayToXml(array $array, SimpleXMLElement $xmlStudentInfo) : SimpleXMLElement
+    {
+        foreach($array as $key => $value) {
+            if(is_array($value)) {
+                if(!is_numeric($key)){
+                    $subNode = $xmlStudentInfo->addChild("$key");
+                    $this->arrayToXml($value, $subNode);
+                }else{
+                    $subNode = $xmlStudentInfo->addChild("item$key");
+                    $this->arrayToXml($value, $subNode);
+                }
+            }else {
+                $xmlStudentInfo->addChild("$key",htmlspecialchars("$value"));
+            }
+        }
+
+        return $xmlStudentInfo;
     }
 }

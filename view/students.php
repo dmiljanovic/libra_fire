@@ -34,10 +34,10 @@
                 <?php foreach ($data as $student) { ?>
                     <tr>
                         <td><?php echo $student['full_name'] ?></td>
-                        <td><?php echo $student['name'] ?></td>
+                        <td><?php echo $student['sb_name'] ?></td>
                         <td><?php echo $student['created_at'] ?></td>
                         <td>
-                            <a class="btn btn-info" href="/students/<?php echo $student['id'] ?>" role="button">View</a>
+                            <a class="btn btn-info" href="/students/<?php echo $student['student_id'] ?>" role="button">View</a>
                         </td>
                     </tr>
                 <?php } ?>

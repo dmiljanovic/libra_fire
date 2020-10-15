@@ -5,6 +5,8 @@
         }
     },
     "require": {
-        "analog/analog": "^1.0"
+        "analog/analog": "^1.0",
+        "ext-simplexml": "*",
+        "ext-json": "*"
     }
 }
